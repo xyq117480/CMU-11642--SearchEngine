@@ -6,6 +6,8 @@
 import java.io.*;
 import java.security.Policy.Parameters;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.lucene.analysis.Analyzer.TokenStreamComponents;
 import org.apache.lucene.analysis.TokenStream;
@@ -126,6 +128,12 @@ public class QryEval {
     else if (modelString.equalsIgnoreCase("rankedboolean")){
       model = new RetrievalModelRankedBoolean();
     }
+    else if (modelString.equalsIgnoreCase("BM25")){
+      model = new RetrievalModelBM25();
+    }
+    else if (modelString.equalsIgnoreCase("Indri")){
+      model = new RetrievalModelIndri();
+    }
     else {
       throw new IllegalArgumentException
         ("Unknown retrieval model " + parameters.get("retrievalAlgorithm"));
@@ -208,14 +216,45 @@ public class QryEval {
         currentOp = new QryIopSyn();
         currentOp.setDisplayName (token);
         opStack.push(currentOp);
-      } else if (token.split("/").length > 1){		
+      } else if (token.equalsIgnoreCase("#sum")){
+    	currentOp = new QrySopSum();
+    	currentOp.setDisplayName(token);
+    	opStack.push(currentOp);
+      } else if (token.equalsIgnoreCase("#wand")){
+    	currentOp = new QrySopWand();
+    	currentOp.setDisplayName(token);
+    	opStack.push(currentOp);
+      } else if (token.equalsIgnoreCase("#wsum")){
+    	currentOp = new QrySopWsum();
+    	currentOp.setDisplayName(token);
+    	opStack.push(currentOp);
+      } else if (token.split("/").length > 1){
+    	String[] parts = token.split("/");
     	int n = Integer.parseInt(token.trim().split("/")[1]);
-    	currentOp = new QryIopNear(n);
+    	if (parts[0].equalsIgnoreCase("#near")){
+    		currentOp = new QryIopNear(n);
+    	}
+    	else if(parts[0].equalsIgnoreCase("#window")){
+    		currentOp = new QryIopWindow(n);
+    	}
     	currentOp.setDisplayName(token);
     	opStack.push(currentOp);
     	
       } else {
-
+    	Pattern p = Pattern.compile("^[0-9]*.[0-9]+");
+  		Matcher m = p.matcher(token);
+    	if(currentOp instanceof QrySopWand && model instanceof RetrievalModelIndri && m.find()){
+    		
+    		
+			((QrySopWand)currentOp).weights.add(Double.parseDouble(token));
+			//System.out.println("token: " +token +" op: " +currentOp + ((QrySopWand)currentOp).weights.toString());
+			continue;
+    		
+    	} else if (currentOp instanceof QrySopWsum && model instanceof RetrievalModelIndri && m.find()){
+    		((QrySopWsum)currentOp).weights.add(Double.parseDouble(token));
+    		continue;
+    	}
+    	
         //  Split the token into a term and a field.
 
         int delimiter = token.indexOf('.');
@@ -241,16 +280,23 @@ public class QryEval {
         //  Lexical processing, stopwords, stemming.  A loop is used
         //  just in case a term (e.g., "near-death") gets tokenized into
         //  multiple terms (e.g., "near" and "death").
+        
 
+       
         String t[] = tokenizeQuery(term);
-
+        
+        if ((t == null || t.length == 0) && currentOp instanceof QrySopWand){
+        	((QrySopWand)currentOp).weights.remove(((QrySopWand)currentOp).weights.size()-1);
+        	
+        }
+   
         for (int j = 0; j < t.length; j++) {
-          //System.out.println(j+". "+t[j]);
+          //System.out.println(j+": "+t[j]);
           Qry termOp = new QryIopTerm(t [j], field);
           termOp.initialize(model);
-          //((QryIop)termOp).evaluate();
-           // System.out.println(((QryIop)termOp).locIteratorGetMatch ());
+          
             currentOp.appendArg (termOp);
+            //System.out.println("termop: "+ termOp);
             
           }
         }

@@ -85,4 +85,24 @@ public class QrySopOr extends QrySop {
       return max;
   }
   
+  /**
+   * Implement abstract method getDfScore() from Qry.
+   * @return Document frequency.
+   * Note that it is not useful in OR operator.
+   */
+  public double getDfScore () {
+	  return -1000;
+  }
+  
+  
+
+  /**
+   * Implement abstract method getDefaultScore() from QrySop.
+   * @return Default score.
+   * Note that it is not useful in OR operator.
+   */
+  public double getDefaultScore(RetrievalModel r, long docid) throws IOException {
+	  return 0;
+  }
+  
 }

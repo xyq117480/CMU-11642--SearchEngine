@@ -252,9 +252,17 @@ public abstract class QryIop extends Qry {
   
   /**
    * Implement the abstract method getRankedScore from Qry.
-   * @return A score for current document.
+   * @return A term frequency for current term and current document.
    */
   public double getRankedScore () {
 	  return this.invertedList.postings.get(this.docIteratorIndex).tf;
+  }
+  
+  /**
+   * Implement the abstract method getDfScore from Qry.
+   * @reutrn A document frequency for current term.
+   */
+  public double getDfScore () {
+	  return this.invertedList.df;
   }
 }

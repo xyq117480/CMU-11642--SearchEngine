@@ -22,6 +22,17 @@ public abstract class QrySop extends Qry {
    */
   public abstract double getScore (RetrievalModel r)
     throws IOException;
+  
+  /**
+   * Get a default score for a document specified by docid. It is used for 
+   * Indri model when there is no match.
+   * @param r The retrieval model, i.e. Indri.
+   * @param docid The document id used to do calculation, e.g. document length.
+   * @return
+   * @throws IOException
+   */
+  public abstract double getDefaultScore (RetrievalModel r, long docid)
+    throws IOException;
 
   /**
    *  Initialize the query operator (and its arguments), including any

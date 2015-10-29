@@ -245,6 +245,12 @@ public abstract class Qry {
   public abstract double getRankedScore();
 
   /**
+   *  Get the document frequency for current term.
+   * @return the document frequency.
+   */
+  public abstract double getDfScore();
+  
+  /**
    *  An instantiation of docIteratorHasMatch that is true if the
    *  query has a document that matches all query arguments; some
    *  subclasses may choose to use this implementation.  
@@ -426,12 +432,17 @@ public abstract class Qry {
     
     String result = new String ();
 
-    for (int i=0; i<this.args.size(); i++)
-      result += i + " " + this.args.get(i) + " ";
-
+    for (int i=0; i<this.args.size(); i++){
+    	result +=  this.args.get(i) + " ";
+    	//System.out.println(result);
+    }
+      
+    
     return (this.displayName + "( " + result + ")");
   }
   
-  
+  public String toOneString(){
+	  return this.args.get(0)+"";
+  }
 
 }
