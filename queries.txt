@@ -1,10 +1,1 @@
-10:#AND(cheap internet)
-12:djs.url
-26:#AND(lower NEAR/1(heart rate))
-29:#AND(#NEAR/1(ps 2) games.keywords)
-33:#NEAR/4(elliptical trainer)
-52:avp.inlink
-71:#AND(#NEAR/2(living in) india.title)
-102:#NEAR/1(fickle creek farm)
-149:#AND(uplift at yellowstone.keywords #NEAR/1(national park))
-190:#OR(#NEAR/1(brooks brothers) clearance.title)
+102:#wand(0.1 #AND(#WSUM(0.00 fickle.url 0.00 fickle.keywords 0.1 fickle.title 0.8 fickle.body 0.1 fickle.inlink) #WSUM(0.00 creek.url 0.00 creek.keywords 0.1 creek.title 0.8 creek.body 0.1 creek.inlink) #WSUM(0.00 farm.url 0.00 farm.keywords 0.1 farm.title 0.8 farm.body 0.1 farm.inlink)) 0.9 #wand( 0.34 #and( fickle creek farm ) 0.33 #and( #near/1( creek farm ) #near/1( fickle creek ) ) 0.330 #and( #window/8( creek farm ) #window/8( fickle creek ) ) ))
