@@ -1,5 +1,17 @@
 # CMU-11642-SearchEngine
 
-Ranked/Unranked Boolean
+Models supported:
+Unranked Boolean
+Ranked Boolean
+BM25
+Indri
 
-AND OR NEAR/n
+Operatros supported:
+Synonym
+NEAR
+WINDOW
+AND
+OR
+SUM
+WSUM
+WAND
