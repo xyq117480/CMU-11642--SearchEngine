@@ -1,4 +1,4 @@
 indexPath=index
-retrievalAlgorithm=RankedBoolean
+retrievalAlgorithm=Indri
 queryFilePath=queries.txt
-trecEvalOutputPath=HW1-queries-UB.teIn
+trecEvalOutputPath=HW3-queries-UB.teIn
